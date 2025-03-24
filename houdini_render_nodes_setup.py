@@ -3,7 +3,7 @@ import hou  # type: ignore
 # Creating geo node with {render_prefix} prefix and setup node network
 def create_render_node_network(out_node, reference_node_pos, offset, flag):
     # Checking for already created {render_prefix} nodes
-    render_node_name = render_prefix + out_node.name().lstrip(out_prefix).upper()
+    render_node_name = render_prefix + out_node.name().removeprefix(out_prefix).upper()
     if hou.node("/obj/" + render_node_name) is not None:
         for node in hou.node("/obj/" + render_node_name).children():
                 # Trying to find "obj_merge" node
@@ -39,7 +39,7 @@ def create_render_node_network(out_node, reference_node_pos, offset, flag):
         # Createing geo node with name of output node
         new_geo_node = hou.node("/obj").createNode("geo")
         new_geo_node.setColor(hou.Color(0.451, 0.369, 0.796))
-        new_geo_node.setName(render_prefix + out_node.name().upper().lstrip(out_prefix), unique_name=True)
+        new_geo_node.setName(render_prefix + out_node.name().upper().removeprefix(out_prefix), unique_name=True)
         get_geo_node_pos = out_node.parent().position()
         new_geo_node.setPosition(hou.Vector2(reference_node_pos[0] + 4, reference_node_pos[1] + offset))
         new_geo_node.setGenericFlag(hou.nodeFlag.Display, 0)
@@ -81,7 +81,7 @@ def setup_children_null(child):
     new_null_node.setPosition(hou.Vector2(child.position()[0], child.position()[1] - 2))
     new_null_node.setInput(0, child)
     if name.startswith("OUT_"):
-        new_null_node.setName(out_prefix + name.lstrip("OUT_"), unique_name=True)
+        new_null_node.setName(out_prefix + name.removeprefix("OUT_"), unique_name=True)
     else:
         new_null_node.setName(out_prefix + name, unique_name=True)
     return new_null_node
